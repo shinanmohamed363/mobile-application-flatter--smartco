@@ -4,6 +4,7 @@ import 'screens/customer_device/customer_device.dart';
 import 'screens/customer_purchase/customer_purchase.dart';
 import 'screens/customer_profile/customer_profile.dart';
 import 'screens/customer_profile/customer_password.dart';
+import 'screens/customer_profile/customer_update.dart';
 import 'screens/login/login.dart';
 
 void main() {
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         '/customerPurchase': (context) => CustomerPurchasePage(),
         '/customerProfile': (context) => CustomerProfilePage(),
         '/customerpassword': (context) => CustomerPasswordPage(),
+        '/customerupdate': (context) => CustomerUpdatePage(),
         // Define other routes here
       },
     );

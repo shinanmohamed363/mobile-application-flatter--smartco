@@ -33,7 +33,8 @@ class _CustomerPasswordPageState extends State<CustomerPasswordPage> {
 
   Future<void> fetchCustomer(String userEmail) async {
     try {
-      final response = await http.get(Uri.parse('http://podsaas.online/api/users/$userEmail'));
+      final response = await http
+          .get(Uri.parse('http://podsaas.online/api/users/$userEmail'));
       if (response.statusCode == 200) {
         final customerData = json.decode(response.body);
         setState(() {
@@ -52,18 +53,22 @@ class _CustomerPasswordPageState extends State<CustomerPasswordPage> {
         setState(() {
           isVerified = true;
         });
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Old password verified successfully')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Old password verified successfully')));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Old password is incorrect')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Old password is incorrect')));
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No password found for user')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('No password found for user')));
     }
   }
 
   Future<void> handleSubmit() async {
     if (!isVerified) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please verify your old password first')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please verify your old password first')));
       return;
     }
 
@@ -80,13 +85,15 @@ class _CustomerPasswordPageState extends State<CustomerPasswordPage> {
         headers: {'Content-Type': 'application/json'},
       );
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('New password updated successfully')));
-        Navigator.pushReplacementNamed(context, '/customerProfile');
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('New password updated successfully')));
+        Navigator.pushReplacementNamed(context, '/customerProfile', arguments: userEmail);
       } else {
         throw Exception('Failed to update password');
       }
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error updating customer: $error')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error updating customer: $error')));
     }
   }
 
@@ -106,7 +113,7 @@ class _CustomerPasswordPageState extends State<CustomerPasswordPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: navigateBackToCustomerProfile,
+          onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'SMARTCO',
@@ -141,7 +148,8 @@ class _CustomerPasswordPageState extends State<CustomerPasswordPage> {
               ),
             ),
             TextField(
-              decoration: InputDecoration(labelText: 'Old Password', border: OutlineInputBorder()),
+              decoration: InputDecoration(
+                  labelText: 'Old Password', border: OutlineInputBorder()),
               obscureText: true,
               onChanged: (value) {
                 setState(() {
@@ -169,7 +177,8 @@ class _CustomerPasswordPageState extends State<CustomerPasswordPage> {
                 ),
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'New Password', border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                    labelText: 'New Password', border: OutlineInputBorder()),
                 obscureText: true,
                 onChanged: (value) {
                   setState(() {

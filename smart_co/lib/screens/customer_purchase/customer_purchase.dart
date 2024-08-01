@@ -18,16 +18,23 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
   String? id;
   String? civilId;
   String? emiNumber;
+  String? userEmail;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      id = ModalRoute.of(context)!.settings.arguments as String?;
-      if (id != null) {
-        fetchSellingDetails(id!);
+      final arguments = ModalRoute.of(context)!.settings.arguments as Map?;
+      if (arguments != null) {
+        id = arguments['id'] as String?;
+        userEmail = arguments['email'] as String?;
+        if (id != null) {
+          fetchSellingDetails(id!);
+        } else {
+          print('Error: id is null');
+        }
       } else {
-        print('Error: id is null');
+        print('Error: arguments are null');
       }
     });
     requestPermission();
@@ -79,8 +86,8 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
     Navigator.pushReplacementNamed(context, '/'); // Navigate to login or home screen after logout
   }
 
-  void navigateBackToCustomerHome() {
-    Navigator.pushReplacementNamed(context, '/customerHome');
+  void navigateBackToCustomerHome(BuildContext context, String userEmail) {
+    Navigator.pushReplacementNamed(context, '/customerHome', arguments: userEmail);
   }
 
   Future downloadPDF(Map rowData) async {
@@ -139,7 +146,13 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: navigateBackToCustomerHome,
+          onPressed: () {
+            if (userEmail != null) {
+              navigateBackToCustomerHome(context, userEmail!);
+            } else {
+              print('Error: email is null');
+            }
+          },
         ),
         title: Text(
           'SMARTCO',

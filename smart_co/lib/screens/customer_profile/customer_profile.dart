@@ -42,8 +42,8 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     Navigator.pushNamed(context, '/customerpassword', arguments: userEmail);
   }
 
-  void navigateToUpdateCustomer(BuildContext context) {
-    Navigator.pushNamed(context, '/customerupdate');
+  void navigateToUpdateCustomer(BuildContext context, String userEmail) {
+    Navigator.pushNamed(context, '/customerupdate', arguments: userEmail);
   }
 
   void handleLogout(BuildContext context) {
@@ -85,20 +85,68 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                elevation: 5,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('User Name: ${customer['name'] ?? ''}'),
-                      Text('E-mail: ${customer['email'] ?? ''}'),
-                      Text('Mobile: ${customer['mobile'] ?? ''}'),
-                      Text('Whatsapp Number: ${customer['whatsapp_no'] ?? ''}'),
-                      Text('Telephone Number: ${customer['telephone_no'] ?? ''}'),
-                      Text('Address: ${customer['address'] ?? ''}'),
-                      Text('Nationality: ${customer['nationality'] ?? ''}'),
-                      Text('Civil ID: ${customer['civil_id'] ?? ''}'),
-                      Text('Paci Number: ${customer['paci_number'] ?? ''}'),
+                      ListTile(
+                        leading: Icon(Icons.person, color: Color(0xFF752888)),
+                        title: Text('User Name', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(customer['name']?.toString() ?? ''),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.email, color: Color(0xFF752888)),
+                        title: Text('E-mail', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(customer['email']?.toString() ?? ''),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.phone, color: Color(0xFF752888)),
+                        title: Text('Mobile', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(customer['mobile']?.toString() ?? ''),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.message, color: Color(0xFF752888)),
+                        title: Text('Whatsapp Number', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(customer['whatsapp_no']?.toString() ?? ''),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.call, color: Color(0xFF752888)),
+                        title: Text('Telephone Number', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(customer['telephone_no']?.toString() ?? ''),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.home, color: Color(0xFF752888)),
+                        title: Text('Address', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(customer['address']?.toString() ?? ''),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.flag, color: Color(0xFF752888)),
+                        title: Text('Nationality', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(customer['nationality']?.toString() ?? ''),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.badge, color: Color(0xFF752888)),
+                        title: Text('Civil ID', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(customer['civil_id']?.toString() ?? ''),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.pin_drop, color: Color(0xFF752888)),
+                        title: Text('Paci Number', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(customer['paci_number']?.toString() ?? ''),
+                      ),
                     ],
                   ),
                 ),
@@ -108,15 +156,31 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                 child: Column(
                   children: [
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF752888),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                      ),
                       onPressed: userEmail != null
                           ? () => navigateToUpdatePassword(context, userEmail!)
                           : null,
-                      child: Text('Update Password'),
+                      child: Text('Update Password', style: TextStyle(fontSize: 16)),
                     ),
                     SizedBox(height: 10),
                     ElevatedButton(
-                      onPressed: () => navigateToUpdateCustomer(context),
-                      child: Text('Update Profile'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF752888),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                      ),
+                      onPressed: () => navigateToUpdateCustomer(context, userEmail!),
+                      child: Text('Update Profile', style: TextStyle(fontSize: 16)),
                     ),
                   ],
                 ),

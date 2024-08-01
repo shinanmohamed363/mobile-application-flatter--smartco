@@ -77,8 +77,8 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
     // Navigate to Device Page
   }
 
-  void navigateToCustomerPurchase(BuildContext context, String id) {
-    Navigator.pushNamed(context, '/customerPurchase', arguments: id);
+  void navigateToCustomerPurchase(BuildContext context, String id, String userEmail) {
+    Navigator.pushNamed(context, '/customerPurchase', arguments: {'id': id, 'email': userEmail});
   }
 
   @override
@@ -120,7 +120,11 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
                 color: Colors.purple[50],
+                elevation: 5,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -128,6 +132,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                       Text(
                         'Number of devices you can buy from us',
                         style: TextStyle(fontSize: 18, color: Colors.black54),
+                        textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 8),
                       Text(
@@ -143,12 +148,17 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                         onPressed: () => navigateToDevicePage(context),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.purple, // Background color
+                          foregroundColor: Colors.white, // Text color
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                         ),
-                        child: Text('FIND YOUR DEVICE'),
+                        child: Text('FIND YOUR DEVICE', style: TextStyle(fontSize: 16)),
                       ),
                       SizedBox(height: 16),
-                      Image.network(
-                        'https://via.placeholder.com/150', // Replace with your image URL
+                      Image.asset(
+                        'assets/customerImage.png', // Replace with your image URL
                         height: 150,
                       ),
                     ],
@@ -179,41 +189,85 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                       final selling = sellings[index];
                       return GestureDetector(
                         onTap: () {
-                          navigateToCustomerPurchase(context, selling['_id']);
+                          if (userEmail != null) {
+                            navigateToCustomerPurchase(context, selling['_id'], userEmail!);
+                          } else {
+                            print('Error: email is null');
+                          }
                         },
                         child: Card(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Image.network(
-                                selling['imageName'],
-                                height: 140,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      selling['deviceName'],
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text('Purchase Date: ${selling['date']}'),
-                                    Text('Device Price: ${selling['price']}'),
-                                    Text('Advance: ${selling['advance']}'),
-                                    Text('Remaining Balance: ${selling['balance']}'),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(15.0),
+  ),
+  elevation: 8,
+  shadowColor: Colors.purple.withOpacity(0.5),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(15.0),
+          topRight: Radius.circular(15.0),
+        ),
+        child: Image.network(
+          selling['imageName'],
+          height: 200,
+          width: double.infinity,
+          fit: BoxFit.cover,
+        ),
+      ),
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                selling['deviceName'],
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.purple[800],
+                ),
+              ),
+              SizedBox(height: 6),
+              Text(
+                'Purchase Date: ${selling['date']}',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+              ),
+              Text(
+                'Device Price: ${selling['price']}',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+              ),
+              Text(
+                'Advance: ${selling['advance']}',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+              ),
+              Text(
+                'Remaining Balance: ${selling['balance']}',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+
+
                       );
                     },
                   ),
