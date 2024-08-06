@@ -5,6 +5,8 @@ import 'screens/customer_purchase/customer_purchase.dart';
 import 'screens/customer_profile/customer_profile.dart';
 import 'screens/customer_profile/customer_password.dart';
 import 'screens/customer_profile/customer_update.dart';
+import 'screens/login/forget_password.dart';
+import 'screens/login/reset_password.dart';
 import 'screens/login/login.dart';
 
 void main() {
@@ -28,6 +30,8 @@ class MyApp extends StatelessWidget {
         '/customerProfile': (context) => CustomerProfilePage(),
         '/customerpassword': (context) => CustomerPasswordPage(),
         '/customerupdate': (context) => CustomerUpdatePage(),
+        '/forget_password': (context) => ForgetPasswordPage(),
+        '/reset_password': (context) => ResetPasswordPage(),
         // Define other routes here
       },
     );

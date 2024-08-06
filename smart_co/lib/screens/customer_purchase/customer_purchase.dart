@@ -144,25 +144,26 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            if (userEmail != null) {
-              navigateBackToCustomerHome(context, userEmail!);
-            } else {
-              print('Error: email is null');
-            }
-          },
-        ),
         title: Text(
           'SMARTCO',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontFamily: 'Public Sans, sans-serif',
+            fontWeight: FontWeight.bold,
+            foreground: Paint()
+              ..shader = LinearGradient(
+                colors: <Color>[Color(0xFFC63DE7), Color(0xFF752888)],
+              ).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
+          ),
         ),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
-            onPressed: handleLogout,
+            onPressed: () => handleLogout(),
           ),
         ],
       ),
@@ -184,7 +185,8 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
                               children: [
                                 Text(
                                   '${selling['deviceName']}',
-                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.center,
                                 ),
                                 Image.network(
                                   selling['imageName'],
@@ -210,7 +212,9 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
                                   'Payment Plan',
                                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                 ),
-                                DataTable(
+                                SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child:DataTable(
                                   columns: [
                                     DataColumn(label: Text('Date')),
                                     DataColumn(label: Text('Price')),
@@ -235,6 +239,7 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
                                       ),
                                     ]);
                                   }).toList(),
+                                ),
                                 ),
                                 SizedBox(height: 16),
                                 Container(
@@ -282,6 +287,13 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
                           ),
                         ),
                         SizedBox(height: 16),
+                        Card(
+                          elevation: 4,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
                         Text(
                           'Payment History',
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -306,11 +318,15 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
                                     style: ElevatedButton.styleFrom(
                                       padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                                     ),
-                                    child: Text('View'),
+                                    child: Text('Download Invoice'),
                                   ),
                                 ),
                               ]);
                             }).toList(),
+                          ),
+                        ),
+                        ],
+                            ),
                           ),
                         ),
                       ],
