@@ -9,11 +9,19 @@ class CustomerDevicePage extends StatefulWidget {
 
 class _CustomerDevicePageState extends State<CustomerDevicePage> {
   List<dynamic> devices = [];
+  String? userEmail;
 
   @override
   void initState() {
     super.initState();
-    fetchDevices();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      userEmail = ModalRoute.of(context)!.settings.arguments as String?;
+      if (userEmail != null) {
+        fetchDevices();
+      } else {
+        print('Error: email is null');
+      }
+    });
   }
 
   Future<void> fetchDevices() async {
@@ -29,23 +37,19 @@ class _CustomerDevicePageState extends State<CustomerDevicePage> {
     }
   }
 
-  void handleLogout() {
-    // Handle logout logic
-    Navigator.pushReplacementNamed(context, '/'); // Navigate to login or home screen after logout
+  void handleLogout(BuildContext context) {
+    // Handle logout
+    Navigator.pushReplacementNamed(context, '/');
   }
 
-  void navigateToCustomerHome() {
-    Navigator.pushReplacementNamed(context, '/customerHome');
+  void navigateBackToCustomerHome(BuildContext context, String userEmail) {
+    Navigator.pushReplacementNamed(context, '/customerHome', arguments: userEmail);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: navigateToCustomerHome,
-        ),
         title: Text(
           'SMARTCO',
           style: TextStyle(
@@ -57,15 +61,17 @@ class _CustomerDevicePageState extends State<CustomerDevicePage> {
               ).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
           ),
         ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => navigateBackToCustomerHome(context, userEmail!),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
-            onPressed: handleLogout,
+            onPressed: () => handleLogout(context),
           ),
         ],
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

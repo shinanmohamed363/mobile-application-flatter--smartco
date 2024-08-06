@@ -158,7 +158,7 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => navigateBackToCustomerHome(context, userEmail!),
         ),
         actions: [
           IconButton(
