@@ -103,7 +103,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
 
     try {
       final res =
-          await http.get(Uri.parse('http://podsaas.online/api/users/$email'));
+          await http.get(Uri.parse('https://app.smartco.live/api/users/$email'));
       if (res.statusCode == 200) {
         final userData = json.decode(res.body);
         print(userData);
@@ -122,7 +122,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
 
         final serviceId = 'service_rp48zn9';
         final templateId = 'template_5upimbk';
-        final userId = 'FUl_jD_T0H1wwRm8b';
+        final userId = 'DKodxJRDdbkiegNFq';
 
         final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
         final responce = await http.post(

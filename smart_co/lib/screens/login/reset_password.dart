@@ -123,7 +123,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
       try {
         final res = await http.put(
-          Uri.parse('http://podsaas.online/api/users/$userEmail'),
+          Uri.parse('https://app.smartco.live/api/users/$userEmail'),
           body: json.encode({'password': newPassword}),
           headers: {'Content-Type': 'application/json'},
         );

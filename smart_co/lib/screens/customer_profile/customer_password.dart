@@ -34,7 +34,7 @@ class _CustomerPasswordPageState extends State<CustomerPasswordPage> {
   Future<void> fetchCustomer(String userEmail) async {
     try {
       final response = await http
-          .get(Uri.parse('http://podsaas.online/api/users/$userEmail'));
+          .get(Uri.parse('https://app.smartco.live/api/users/$userEmail'));
       if (response.statusCode == 200) {
         final customerData = json.decode(response.body);
         setState(() {
@@ -80,7 +80,7 @@ class _CustomerPasswordPageState extends State<CustomerPasswordPage> {
 
     try {
       final response = await http.put(
-        Uri.parse('http://podsaas.online/api/users/${customer['email']}'),
+        Uri.parse('https://app.smartco.live/api/users/${customer['email']}'),
         body: json.encode(updatedUser),
         headers: {'Content-Type': 'application/json'},
       );

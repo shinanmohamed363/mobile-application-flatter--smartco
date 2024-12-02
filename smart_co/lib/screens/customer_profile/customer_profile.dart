@@ -26,7 +26,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
 
   Future<void> fetchCustomer(String userEmail) async {
     try {
-      final response = await http.get(Uri.parse('http://podsaas.online/api/customer/$userEmail'));
+      final response = await http.get(Uri.parse('https://app.smartco.live/api/customer/$userEmail'));
       if (response.statusCode == 200) {
         final customerData = json.decode(response.body);
         setState(() {
@@ -170,18 +170,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                       child: Text('Update Password', style: TextStyle(fontSize: 16)),
                     ),
                     SizedBox(height: 10),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF752888),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                      ),
-                      onPressed: () => navigateToUpdateCustomer(context, userEmail!),
-                      child: Text('Update Profile', style: TextStyle(fontSize: 16)),
-                    ),
+                    
                   ],
                 ),
               ),

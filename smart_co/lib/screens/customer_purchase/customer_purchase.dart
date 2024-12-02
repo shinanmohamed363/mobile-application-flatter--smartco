@@ -50,30 +50,96 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
 
   Future fetchSellingDetails(String id) async {
     try {
-      final sellingResponse = await http.get(Uri.parse('http://podsaas.online/selling/getOneSellingID/$id'));
+      print(id);
+
+      // Fetch selling data
+      final sellingResponse = await http.get(
+        Uri.parse('https://app.smartco.live/selling/getOneSellingID/$id'),
+      );
+
       if (sellingResponse.statusCode == 200) {
-        setState(() {
-          selling = json.decode(sellingResponse.body);
-          paymentPlan = selling['customArray'] ?? [];
-          civilId = selling['civilID'];
-          emiNumber = selling['emiNumber'];
-        });
+        final sellingData = json.decode(sellingResponse.body);
 
-        final newPayments = {
-          'civilID': civilId,
-          'emiNumber': emiNumber
-        };
-
-        final paymentResponse = await http.post(
-          Uri.parse('http://podsaas.online/payment/getOnePayment'),
-          headers: {'Content-Type': 'application/json'},
-          body: json.encode(newPayments),
-        );
-
-        if (paymentResponse.statusCode == 200) {
+        // Check if sellingData is a List or a Map
+        if (sellingData is Map) {
           setState(() {
-            paymentHistory = json.decode(paymentResponse.body);
+            selling = sellingData;
+            paymentPlan = selling['customArray'] ?? [];
+            civilId = selling['civilID'];
+            emiNumber = selling['emiNumber'];
           });
+
+          final newPayments = {
+            'civilID': civilId,
+            'emiNumber': emiNumber,
+          };
+          print(newPayments);
+
+          // Fetch payment data
+          final paymentResponse = await http.post(
+            Uri.parse('https://app.smartco.live/payment/getOnePayment'),
+            headers: {'Content-Type': 'application/json'},
+            body: json.encode(newPayments),
+          );
+
+          if (paymentResponse.statusCode == 200) {
+            final paymentData = json.decode(paymentResponse.body);
+
+            // Handle if paymentData is a List or transform it into a List
+            if (paymentData is List) {
+              setState(() {
+                paymentHistory = paymentData;
+              });
+            } else if (paymentData is Map) {
+              // If paymentData is a Map, you can decide how to handle it
+              // Example: Convert it into a List, if applicable
+              setState(() {
+                paymentHistory = [
+                  paymentData
+                ]; // Convert Map to List by wrapping in []
+              });
+            }
+          }
+        } else if (sellingData is List) {
+          // Handle case if sellingData is a List
+          setState(() {
+            selling = sellingData.isNotEmpty ? sellingData.first : {};
+            paymentPlan = selling['customArray'] ?? [];
+            civilId = selling['civilID'];
+            emiNumber = selling['emiNumber'];
+          });
+
+          final newPayments = {
+            'civilID': civilId,
+            'emiNumber': emiNumber,
+          };
+          print(newPayments);
+
+          // Fetch payment data
+          final paymentResponse = await http.post(
+            Uri.parse('https://app.smartco.live/payment/getOnePayment'),
+            headers: {'Content-Type': 'application/json'},
+            body: json.encode(newPayments),
+          );
+
+          if (paymentResponse.statusCode == 200) {
+            final paymentData = json.decode(paymentResponse.body);
+
+            // Handle if paymentData is a List or transform it into a List
+            if (paymentData is List) {
+              setState(() {
+                paymentHistory = paymentData;
+              });
+            } else if (paymentData is Map) {
+              // If paymentData is a Map, you can decide how to handle it
+              // Example: Convert it into a List, if applicable
+              setState(() {
+                paymentHistory = [
+                  paymentData
+                ]; // Convert Map to List by wrapping in []
+              });
+            }
+          }
         }
       }
     } catch (error) {
@@ -83,17 +149,19 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
 
   void handleLogout() {
     // Handle logout logic
-    Navigator.pushReplacementNamed(context, '/'); // Navigate to login or home screen after logout
+    Navigator.pushReplacementNamed(
+        context, '/'); // Navigate to login or home screen after logout
   }
 
   void navigateBackToCustomerHome(BuildContext context, String userEmail) {
     Navigator.pushReplacementNamed(context, '/customerHome', arguments: userEmail);
-  }
 
+  }
   Future downloadPDF(Map rowData) async {
     try {
       final response = await http.post(
-        Uri.parse('http://podsaas.online/convertToCustomerPaymentInvoicePDF'),
+        Uri.parse(
+            'https://app.smartco.live/convertToCustomerPaymentInvoicePDF'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode(rowData),
       );
@@ -117,7 +185,8 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
     if (id != null && civilId != null) {
       try {
         final response = await http.post(
-          Uri.parse('http://podsaas.online/convertToOverAllPaymentInvoicePDF'),
+          Uri.parse(
+              'https://app.smartco.live/convertToOverAllPaymentInvoicePDF'),
           headers: {'Content-Type': 'application/json'},
           body: json.encode({'id': id, 'civil_id': civilId}),
         );
@@ -160,7 +229,7 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => navigateBackToCustomerHome(context, userEmail!),
         ),
-        actions: [
+        actions: [  
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () => handleLogout(),
@@ -185,17 +254,22 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
                               children: [
                                 Text(
                                   '${selling['deviceName']}',
-                                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.center,
                                 ),
-                                Image.network(
-                                  selling['imageName'],
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Text('Error loading image');
-                                  },
-                                ),
+                                Container(
+  margin: const EdgeInsets.only(top: 20), // Apply top margin
+  child: Image.network(
+    selling['imageName'],
+    width: double.infinity,
+    fit: BoxFit.cover,
+    errorBuilder: (context, error, stackTrace) {
+      return Text('Error loading image');
+    },
+  ),
+)
                               ],
                             ),
                           ),
@@ -210,55 +284,96 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
                               children: [
                                 Text(
                                   'Payment Plan',
-                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child:DataTable(
-                                  columns: [
-                                    DataColumn(label: Text('Date')),
-                                    DataColumn(label: Text('Price')),
-                                    DataColumn(label: Text('Status')),
-                                  ],
-                                  rows: paymentPlan.map((item) {
-                                    return DataRow(cells: [
-                                      DataCell(Text(item['date'] ?? '')),
-                                      DataCell(Text('${item['price']}')),
-                                      DataCell(
-                                        Container(
-                                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                          decoration: BoxDecoration(
-                                            color: item['status'] == 'paid' ? Colors.green : Colors.red,
-                                            borderRadius: BorderRadius.circular(4),
-                                          ),
-                                          child: Text(
-                                            item['status'] == 'paid' ? 'PAID' : 'UNPAID',
-                                            style: TextStyle(color: Colors.white),
+                                  scrollDirection: Axis.horizontal,
+                                  child: DataTable(
+                                    columns: [
+                                      DataColumn(label: Text('Date')),
+                                      DataColumn(label: Text('Price')),
+                                      DataColumn(label: Text('Status')),
+                                    ],
+                                    rows: paymentPlan.map((item) {
+                                      return DataRow(cells: [
+                                        DataCell(Text(item['date'] ?? '')),
+                                        DataCell(Text('${item['price']}')),
+                                        DataCell(
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: item['status'] == 'paid'
+                                                  ? Colors.green
+                                                  : Colors.red,
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                            ),
+                                            child: Text(
+                                              item['status'] == 'paid'
+                                                  ? 'PAID'
+                                                  : 'UNPAID',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ]);
-                                  }).toList(),
-                                ),
+                                      ]);
+                                    }).toList(),
+                                  ),
                                 ),
                                 SizedBox(height: 16),
                                 Container(
                                   color: Colors.purple.shade100,
                                   padding: const EdgeInsets.all(8.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Device Price: ${selling['price']}',
-                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.purple.shade900),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.purple.shade900),
                                       ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 10),
+                                  color: Colors.purple.shade100,
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
                                       Text(
                                         'Advance: ${selling['advance']}',
-                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.purple.shade900),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.purple.shade900),
                                       ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 10),
+                                  color: Colors.purple,
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
                                       Text(
                                         'Remaining Balance: ${selling['balance']}',
-                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.purple.shade900),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.purple.shade100),
                                       ),
                                     ],
                                   ),
@@ -294,38 +409,45 @@ class _CustomerPurchasePageState extends State<CustomerPurchasePage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                        Text(
-                          'Payment History',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                            columns: [
-                              DataColumn(label: Text('Transaction Date')),
-                              DataColumn(label: Text('Payment Amount')),
-                              DataColumn(label: Text('Device Name')),
-                              DataColumn(label: Text('Action')),
-                            ],
-                            rows: paymentHistory.map((row) {
-                              return DataRow(cells: [
-                                DataCell(Text(row['date'] ?? '')),
-                                DataCell(Text(row['price']?.toString() ?? '')),
-                                DataCell(Text(row['deviceName']?.toString() ?? '')),
-                                DataCell(
-                                  ElevatedButton(
-                                    onPressed: () => downloadPDF(row),
-                                    style: ElevatedButton.styleFrom(
-                                      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                                    ),
-                                    child: Text('Download Invoice'),
+                                Text(
+                                  'Payment History',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: DataTable(
+                                    columns: [
+                                      DataColumn(
+                                          label: Text('Transaction Date')),
+                                      DataColumn(label: Text('Payment Amount')),
+                                      DataColumn(label: Text('Device Name')),
+                                      DataColumn(label: Text('Action')),
+                                    ],
+                                    rows: paymentHistory.map((row) {
+                                      return DataRow(cells: [
+                                        DataCell(Text(row['date'] ?? '')),
+                                        DataCell(Text(
+                                            row['price']?.toString() ?? '')),
+                                        DataCell(Text(
+                                            row['deviceName']?.toString() ??
+                                                '')),
+                                        DataCell(
+                                          ElevatedButton(
+                                            onPressed: () => downloadPDF(row),
+                                            style: ElevatedButton.styleFrom(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 12, horizontal: 16),
+                                            ),
+                                            child: Text('Download Invoice'),
+                                          ),
+                                        ),
+                                      ]);
+                                    }).toList(),
                                   ),
                                 ),
-                              ]);
-                            }).toList(),
-                          ),
-                        ),
-                        ],
+                              ],
                             ),
                           ),
                         ),

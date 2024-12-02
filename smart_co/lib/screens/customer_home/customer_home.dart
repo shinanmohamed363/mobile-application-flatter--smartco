@@ -29,14 +29,14 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
 
   Future<void> fetchSellings() async {
     try {
-      final customerResponse = await http.get(Uri.parse('http://podsaas.online/api/customer/$userEmail'));
+      final customerResponse = await http.get(Uri.parse('https://app.smartco.live/api/customer/$userEmail'));
       if (customerResponse.statusCode == 200) {
         final customerData = json.decode(customerResponse.body);
         setState(() {
           userCivilID = customerData['civil_id'];
         });
 
-        final sellingResponse = await http.get(Uri.parse('http://podsaas.online/selling/getOneSelling/$userCivilID'));
+        final sellingResponse = await http.get(Uri.parse('https://app.smartco.live/selling/getOneSelling/$userCivilID'));
         if (sellingResponse.statusCode == 200) {
           final sellingData = json.decode(sellingResponse.body);
           setState(() {
@@ -51,7 +51,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
 
   Future<void> fetchDeviceDetails() async {
     try {
-      final response = await http.get(Uri.parse('http://podsaas.online/device/getDevice'));
+      final response = await http.get(Uri.parse('https://app.smartco.live/device/getDevice'));
       if (response.statusCode == 200) {
         final deviceData = json.decode(response.body);
         setState(() {

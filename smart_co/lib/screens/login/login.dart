@@ -118,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://podsaas.online/api/users/login'),
+        Uri.parse('https://app.smartco.live/api/users/login'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({'email': email, 'password': password}),
       );
